@@ -169,4 +169,9 @@ Run into an issue? [Open an issue](https://github.com/matheus-apolonio/tabflow-r
 *Released March 3, 2026*
 
 [Download](https://github.com/matheus-apolonio/tabflow-resources/releases/tag/tabflow-companion-app-v2026.303.0)
+
+### Browser Extension — v2026.303.0
+*Released March 3, 2026*
+
+[Download](https://github.com/matheus-apolonio/tabflow-resources/releases/tag/tabflow-browser-extension-v2026.303.0)
 <!-- TABFLOW_RELEASES_END -->
