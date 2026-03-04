@@ -2,157 +2,111 @@
 
 **The smart tab router for multi-browser setups.**
 
-TabFlow automatically opens URLs in the right browser profile — so you never have to manually copy-paste links between Chrome, Firefox, or any other browser again.
+TabFlow automatically opens URLs in the right browser profile — no more copy-pasting links between browsers.
 
-> Map `github.com` → Work profile, `youtube.com` → Personal profile.
+> `github.com` → Work profile · `youtube.com` → Personal profile
 > Click a link anywhere. TabFlow handles the rest.
 
 ---
 
-## ✨ Features & Plans
+## 🔄 How It Works
+
+TabFlow has two parts: a **desktop app** and a **browser extension**.
+
+You set up URL-to-profile rules in the desktop app. The browser extension picks up navigation in real time — if a URL belongs to a different profile, the tab is automatically redirected. You can always override a redirect with **"Open here instead"**.
+
+Right-click any link to manually **"Open in..."** another profile, no mapping needed.
+
+Need a break? **Pause redirection** for 5, 15, 30, or 60 minutes — or indefinitely — from the system tray or extension popup.
+
+---
+
+## 🧩 Flexible Pattern Matching
+
+| You type | Matches |
+| --- | --- |
+| `youtube.com` | `https://www.youtube.com`, `https://youtube.com/watch?v=...` |
+| `docs.google.com` | `https://docs.google.com/document/d/...` |
+| `slack` | `https://app.slack.com`, `https://slack.com/workspace` |
+
+Case-insensitive · protocol-agnostic · www-agnostic · trailing-slash-agnostic.
+
+---
+
+## ✨ Plans
 
 |  | 🆓 Free | 🕐 Trial (30 days) | ⭐ Pro |
 | --- | :---: | :---: | :---: |
-| **Automatic URL routing** | ✅ | ✅ | ✅ |
-| **Pause / resume** from tray or extension | ✅ | ✅ | ✅ |
-| **System tray** with live status | ✅ | ✅ | ✅ |
-| **Auto-updates** | ✅ | ✅ | ✅ |
-| **Multi-language** (EN, ES, FR, PT-BR) | ✅ | ✅ | ✅ |
-| **Export** mappings | ✅ | ✅ | ✅ |
+| Automatic URL routing | ✅ | ✅ | ✅ |
+| Right-click "Open in..." | ✅ | ✅ | ✅ |
+| Pause / resume | ✅ | ✅ | ✅ |
+| System tray with live status | ✅ | ✅ | ✅ |
+| Auto-updates | ✅ | ✅ | ✅ |
+| Multi-language (EN · ES · FR · PT-BR) | ✅ | ✅ | ✅ |
+| Export mappings | ✅ | ✅ | ✅ |
 | URL mappings | Up to 10 | Up to 100 | Unlimited |
 | Browser profiles | Up to 2 | Up to 5 | Unlimited |
-| **Import** mappings | — | ✅ | ✅ |
-| **Cross-device sync** | — | ✅ | ✅ |
-| **Device management** | 1 device | 1 device | 1 device (extra seats available) |
+| Import mappings | — | ✅ | ✅ |
+| Cross-device sync | — | ✅ | ✅ |
 
-> 🎁 Every new account gets a **30-day free trial** with full access — no credit card required.
+All plans are limited to **1 device**. You can switch devices anytime by deactivating the old one in Settings.
 
----
-
-## 🧩 How Pattern Matching Works
-
-You create simple rules that map URL patterns to browser profiles. TabFlow matches flexibly:
-
-| You type | ✅ It matches all of these |
-| --- | --- |
-| `youtube.com` | `https://www.youtube.com`, `https://youtube.com/watch?v=...`, `youtube.com` |
-| `notion.so` | `https://www.notion.so`, `https://notion.so/page`, `notion.so` |
-| `docs.google.com` | `https://docs.google.com/document/d/...` |
-| `slack` | `https://app.slack.com`, `https://slack.com`, `slack.com/workspace` |
-
-> 💡 Matching is **case-insensitive**, **protocol-agnostic** (`http://` or `https://`), **www-agnostic**, and **trailing-slash-agnostic**.
+> 🎁 Every new account starts with a **30-day free trial** — full access, no credit card required.
 
 ---
 
-## 📥 Download & Install
+## 📥 Download
 
-### 1. Desktop App (required)
+### Desktop App
 
-Download the latest version from the [📦 Releases page](https://github.com/matheus-apolonio/tabflow-resources/releases).
+Download from the [Releases page](https://github.com/matheus-apolonio/tabflow-resources/releases).
 
 | Platform | File |
 | --- | --- |
-| 🍎 macOS (Apple Silicon) | `TabFlow App-x.x.x-arm64.dmg` |
-| 🍎 macOS (Intel) | `TabFlow App-x.x.x.dmg` |
-| 🪟 Windows | Coming soon |
+| 🍎 macOS (Apple Silicon) | `TabFlow-App-x.x.x-arm64.dmg` |
+| 🪟 Windows | `TabFlow-App-x.x.x-Setup.exe` |
+| 🐧 Linux | `.deb` (Debian/Ubuntu) · `.rpm` (Fedora/RHEL) |
 
-**Steps:**
+### Browser Extension
 
-1. Download the `.dmg` for your platform
-2. Open it and drag TabFlow to Applications
-3. Launch TabFlow — it will appear in your menu bar
-4. Create an account or sign in
-
-### 2. Browser Extension
-
-The extension works alongside the desktop app to intercept and redirect tabs.
+Install in **every browser profile** you want TabFlow to manage.
 
 | Browser | Install from |
 | --- | --- |
-| 🟡 Chrome | [Chrome Web Store](https://chromewebstore.google.com) |
-| 🟠 Firefox | [Firefox Add-ons](https://addons.mozilla.org) |
-
-> ⚠️ Currently tested on **Chrome** and **Firefox**. Other Chromium-based browsers (Edge, Brave, Arc, Opera) may work but are not officially tested yet.
-
-**Steps:**
-
-1. Install the extension from your browser's store (links above)
-2. The extension icon will appear in your toolbar
-3. Repeat for each browser profile you want TabFlow to manage
-
-### 3. Link Your Browser Profiles
-
-1. Open the TabFlow desktop app
-2. Go to the **Home** page — your detected browsers and profiles will appear
-3. Click **Sync** next to each browser profile to link it with TabFlow
-4. The extension popup will confirm the connection
+| Chrome, Edge, Opera, and Chromium-based | [Chrome Web Store](https://chromewebstore.google.com) |
+| Firefox, Zen, and Firefox-based | [Firefox Add-ons](https://addons.mozilla.org) |
 
 ---
 
-## 🚀 Getting Started
-
-### Add Your First Mapping
-
-1. Open TabFlow and go to the **Mappings** page
-2. Click **Add Mapping**
-3. Type a URL pattern (e.g., `github.com`)
-4. Select the target browser profile
-5. Done — that URL will now always open in the right place
-
-### Pause / Resume
-
-Need to temporarily stop redirecting?
-
-- Click the **TabFlow icon** in your menu bar / system tray
-- Pick a duration: 5, 15, 30, or 60 minutes — or pause indefinitely
-- Click again to resume
-
-You can also pause/resume from the browser extension popup.
-
----
-
-## ⚙️ Configuration
-
-Open TabFlow and go to **Settings**:
+## ⚙️ Settings
 
 | Setting | Options |
 | --- | --- |
-| 🎨 **Theme** | Light, Dark, or System |
-| 🌐 **Language** | English, Spanish, French, Portuguese |
-| 🔄 **Updates** | Automatic, Notify only, or Manual |
-| ☁️ **Sync** | Toggle mapping and preference sync |
-| 💻 **Devices** | View and manage registered devices |
-| 👤 **Account** | License info and plan management |
-
-### Cross-Device Sync
-
-When enabled, your URL mappings and preferences sync across all your devices automatically. Changes on one device appear on others within seconds.
-
-1. Go to **Settings** → **Sync**
-2. Toggle on **Sync mappings** and/or **Sync preferences**
-
-> Sync requires an active trial or Pro license.
+| 🎨 Theme | Light · Dark · System |
+| 🌐 Language | English · Spanish · French · Portuguese |
+| 🔄 Updates | Automatic · Notify only · Manual |
+| ☁️ Sync | Toggle mapping and preference sync (Trial / Pro) |
+| 💻 Devices | View and manage registered devices |
+| 👤 Account | License info and plan management |
 
 ---
 
-## ❓ Troubleshooting
+## ❓ FAQ
 
-**The extension isn't redirecting URLs:**
+**Do both parts need to be installed?**
+Yes — the desktop app manages your mappings and the extension handles redirection. Both are required.
 
-- Make sure the TabFlow desktop app is running
-- Check that the browser profile is linked (Home → Sync button)
-- Verify your mapping patterns on the Mappings page
+**What happens if the desktop app isn't running?**
+Nothing — the extension stays idle and your browsing works normally.
 
-**"Device limit reached" message:**
+**How do I link Firefox profiles?**
+Firefox uses a 6-character sync code. Click Sync in the desktop app, then enter the code in the Firefox extension popup.
 
-- You've registered the maximum number of devices for your plan
-- Go to **Settings** → **Devices** to deactivate a device you no longer use
+**Can I override a redirect?**
+Yes — click **"Open here instead"** on the redirect page. That tab will stay in the current profile.
 
-**Mappings aren't syncing:**
-
-- Check that sync is enabled in **Settings** → **Sync**
-- Ensure you have an active trial or Pro license
-- Check your internet connection
+**I hit the device limit. What do I do?**
+Go to **Settings → Devices** and deactivate a device you no longer use.
 
 ---
 
@@ -170,8 +124,8 @@ Run into an issue? [Open an issue](https://github.com/matheus-apolonio/tabflow-r
 
 [Download](https://github.com/matheus-apolonio/tabflow-resources/releases/tag/tabflow-companion-app-v2026.303.0)
 
-### Browser Extension — v2026.303.0
-*Released March 3, 2026*
+### Browser Extension — v2026.304.0
+*Released March 4, 2026*
 
-[Download](https://github.com/matheus-apolonio/tabflow-resources/releases/tag/tabflow-browser-extension-v2026.303.0)
+[Download](https://github.com/matheus-apolonio/tabflow-resources/releases/tag/tabflow-browser-extension-v2026.304.0)
 <!-- TABFLOW_RELEASES_END -->
