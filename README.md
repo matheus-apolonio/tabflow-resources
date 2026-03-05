@@ -124,8 +124,8 @@ Run into an issue? [Open an issue](https://github.com/matheus-apolonio/tabflow-r
 
 [Download](https://github.com/matheus-apolonio/tabflow-resources/releases/tag/tabflow-companion-app-v2026.305.0)
 
-### Browser Extension — v2026.304.0
-*Released March 4, 2026*
+### Browser Extension — v2026.305.0
+*Released March 5, 2026*
 
-[Download](https://github.com/matheus-apolonio/tabflow-resources/releases/tag/tabflow-browser-extension-v2026.304.0)
+[Download](https://github.com/matheus-apolonio/tabflow-resources/releases/tag/tabflow-browser-extension-v2026.305.0)
 <!-- TABFLOW_RELEASES_END -->
