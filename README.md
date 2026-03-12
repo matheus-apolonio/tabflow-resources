@@ -119,10 +119,10 @@ Run into an issue? [Open an issue](https://github.com/matheus-apolonio/tabflow-r
 ## 📋 Latest Releases
 
 <!-- TABFLOW_RELEASES_START -->
-### Desktop App — v2026.311.0
-*Released March 11, 2026*
+### Desktop App — v2026.312.0
+*Released March 12, 2026*
 
-[Download](https://github.com/matheus-apolonio/tabflow-resources/releases/tag/tabflow-companion-app-v2026.311.0)
+[Download](https://github.com/matheus-apolonio/tabflow-resources/releases/tag/tabflow-companion-app-v2026.312.0)
 
 ### Browser Extension — v2026.311.0
 *Released March 11, 2026*
