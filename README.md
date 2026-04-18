@@ -120,7 +120,7 @@ Run into an issue? [Open an issue](https://github.com/matheus-apolonio/tabflow-r
 
 <!-- TABFLOW_RELEASES_START -->
 ### Desktop App — v2026.417.0
-*Released April 17, 2026*
+*Released April 18, 2026*
 
 [Download](https://github.com/matheus-apolonio/tabflow-resources/releases/tag/tabflow-companion-app-v2026.417.0)
 
