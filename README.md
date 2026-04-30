@@ -4,6 +4,17 @@
 
 TabFlow automatically opens URLs in the right browser profile, so you do not have to copy and paste links between browsers.
 
+## Public Website
+
+This repository also hosts the public TabFlow landing page through GitHub Pages.
+The site is fully static and lives at the repository root:
+
+- `index.html` - landing page content and structure
+- `styles.css` - responsive visual design
+- `script.js` - small progressive enhancement for the sticky header
+- `.github/workflows/pages.yml` - GitHub Pages deployment workflow
+- `docs/release-governance.md` - release and Pages governance notes
+
 > `github.com` -> Work profile  
 > `youtube.com` -> Personal profile  
 > Click a link anywhere. TabFlow handles the rest.
