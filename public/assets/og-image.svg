@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="TabFlow social preview">
+  <rect width="1200" height="630" fill="#f6f8fb"/>
+  <rect x="70" y="70" width="1060" height="490" rx="24" fill="#ffffff" stroke="#dce2ea"/>
+  <rect x="120" y="130" width="92" height="92" rx="20" fill="#202124"/>
+  <text x="166" y="188" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="800" fill="#ffffff">TF</text>
+  <text x="120" y="305" font-family="Inter, Arial, sans-serif" font-size="84" font-weight="850" fill="#171717">Every link,</text>
+  <text x="120" y="394" font-family="Inter, Arial, sans-serif" font-size="84" font-weight="850" fill="#171717">in the right browser.</text>
+  <text x="124" y="462" font-family="Inter, Arial, sans-serif" font-size="28" fill="#68635b">Smart tab routing for multi-browser setups.</text>
+  <rect x="780" y="160" width="280" height="58" rx="12" fill="#edf7f3" stroke="#cce9df"/>
+  <rect x="780" y="252" width="280" height="58" rx="12" fill="#f7eef0" stroke="#efd0d6"/>
+  <rect x="780" y="344" width="280" height="58" rx="12" fill="#eff2ff" stroke="#d6ddff"/>
+  <path d="M720 189h42" stroke="#202124" stroke-width="5" stroke-linecap="round"/>
+  <path d="M720 281h42" stroke="#202124" stroke-width="5" stroke-linecap="round"/>
+  <path d="M720 373h42" stroke="#202124" stroke-width="5" stroke-linecap="round"/>
+  <text x="806" y="197" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="700" fill="#171717">github.com → Work</text>
+  <text x="806" y="289" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="700" fill="#171717">youtube.com → Personal</text>
+  <text x="806" y="381" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="700" fill="#171717">docs.google.com → Client</text>
+</svg>

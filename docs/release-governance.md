@@ -2,8 +2,9 @@
 
 ## GitHub Pages
 
-The public landing page is fully static and lives in the root of this repository.
+The public landing page is a static Vite build and lives in this repository.
 It is deployed by `.github/workflows/pages.yml` whenever `main` receives a push.
+The workflow runs `npm ci`, `npm run build`, and publishes `dist`.
 
 This keeps the site independent from the Companion App and Browser Extension
 repositories. No runtime data, app code, environment variables, or internal

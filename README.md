@@ -7,11 +7,13 @@ TabFlow automatically opens URLs in the right browser profile, so you do not hav
 ## Public Website
 
 This repository also hosts the public TabFlow landing page through GitHub Pages.
-The site is fully static and lives at the repository root:
+The site is a static Vite build and lives at the repository root:
 
 - `index.html` - landing page content and structure
-- `styles.css` - responsive visual design
-- `script.js` - small progressive enhancement for the sticky header
+- `src/` - Vite, React, Tailwind, and shadcn-style UI components
+- `assets/screenshots/` - temporary Companion App screenshots
+- `assets/browser-icons/` - browser icons copied from the Companion App
+- `public/` - static files copied directly into the production build
 - `.github/workflows/pages.yml` - GitHub Pages deployment workflow
 - `docs/release-governance.md` - release and Pages governance notes
 
