@@ -212,6 +212,8 @@ footer a:hover {
 }
 
 .secondary-action {
+  min-width: 7.2rem;
+  padding: 0 1.25rem;
   border: 1px solid hsl(var(--border));
   background: hsl(var(--background));
   color: hsl(var(--foreground));

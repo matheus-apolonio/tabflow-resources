@@ -126,7 +126,8 @@ function setDownloadState({ href, platformLabel, release, directAsset }) {
       month: "short",
       day: "numeric",
     }) : "recently";
-    releaseMeta.textContent = `${release.tag_name} published ${published}. The button is resolved on-device for ${platformLabel}.`;
+    const appReleaseName = release.tag_name.replace(/^app-/, "tabflow-companion-app-");
+    releaseMeta.textContent = `${appReleaseName} published ${published}. The download is selected automatically for ${platformLabel}.`;
   }
 }
 
