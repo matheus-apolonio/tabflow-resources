@@ -1,0 +1,179 @@
+name: Release TabFlow Site
+
+on:
+  schedule:
+    - cron: "0 22 * * *" # Daily at 22:00 UTC, matching the app and extension release cadence.
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Publish even if the latest site tag already points at this commit."
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: release-tabflow-site
+  cancel-in-progress: false
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+jobs:
+  check-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      previous_tag: ${{ steps.check.outputs.previous_tag }}
+      previous_sha: ${{ steps.check.outputs.previous_sha }}
+      release_tag: ${{ steps.version.outputs.release_tag }}
+      release_title: ${{ steps.version.outputs.release_title }}
+      should_publish: ${{ steps.check.outputs.should_publish }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Compute site version
+        id: version
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          YEAR="$(TZ=Europe/Berlin date +%Y)"
+          MONTH="$(TZ=Europe/Berlin date +%-m)"
+          DAY="$(TZ=Europe/Berlin date +%-d)"
+          MMDD=$((MONTH * 100 + DAY))
+          TAG_PREFIX="site-${YEAR}.${MMDD}."
+          LATEST_SEQUENCE="$(
+            git tag --list "${TAG_PREFIX}*" \
+              | awk -v prefix="${TAG_PREFIX}" 'index($0, prefix) == 1 { sequence = substr($0, length(prefix) + 1); if (sequence ~ /^[0-9]+$/) print sequence }' \
+              | sort -n \
+              | tail -n 1
+          )"
+          NEXT_SEQUENCE="$(( ${LATEST_SEQUENCE:-0} + 1 ))"
+          RELEASE_TAG="site-${YEAR}.${MMDD}.${NEXT_SEQUENCE}"
+
+          echo "release_tag=${RELEASE_TAG}" >> "$GITHUB_OUTPUT"
+          echo "release_title=TabFlow Site - ${YEAR}.${MMDD}.${NEXT_SEQUENCE}" >> "$GITHUB_OUTPUT"
+
+      - name: Check latest published site marker
+        id: check
+        env:
+          FORCE: ${{ github.event_name == 'workflow_dispatch' && inputs.force || false }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          PREVIOUS_TAG="$(git tag --list 'site-*' --sort=-creatordate | head -n 1)"
+          PREVIOUS_SHA=""
+          if [ -n "$PREVIOUS_TAG" ]; then
+            PREVIOUS_SHA="$(git rev-list -n 1 "$PREVIOUS_TAG")"
+          fi
+
+          echo "previous_tag=${PREVIOUS_TAG}" >> "$GITHUB_OUTPUT"
+          echo "previous_sha=${PREVIOUS_SHA}" >> "$GITHUB_OUTPUT"
+
+          if [ "$FORCE" = "true" ]; then
+            echo "Manual force requested; publishing the site."
+            echo "should_publish=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if [ -n "$PREVIOUS_SHA" ] && [ "$PREVIOUS_SHA" = "$GITHUB_SHA" ]; then
+            echo "Latest site tag already points at ${GITHUB_SHA}; skipping publish."
+            echo "should_publish=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "Detected site changes since ${PREVIOUS_TAG:-the beginning}; publishing."
+          echo "should_publish=true" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: check-changes
+    if: needs.check-changes.outputs.should_publish == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --no-audit
+
+      - name: Build site
+        run: npm run check
+
+      - name: Prepare change diff
+        env:
+          PREVIOUS_SHA: ${{ needs.check-changes.outputs.previous_sha }}
+          RELEASE_TITLE: ${{ needs.check-changes.outputs.release_title }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          {
+            echo "# ${RELEASE_TITLE}"
+            echo
+            echo "Source commit: \`${GITHUB_SHA}\`"
+            if [ -n "$PREVIOUS_SHA" ]; then
+              echo "Previous site commit: \`${PREVIOUS_SHA}\`"
+              echo
+              echo "## Commits"
+              git log --oneline --no-decorate "${PREVIOUS_SHA}..${GITHUB_SHA}" || true
+              echo
+              echo "## Diff Stat"
+              git diff --stat "${PREVIOUS_SHA}..${GITHUB_SHA}" || true
+            else
+              echo
+              echo "Initial site publication."
+            fi
+          } | tee dist/site-release-notes.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v6
+
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+
+  publish:
+    needs: [check-changes, build]
+    if: needs.check-changes.outputs.should_publish == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Checkout for tag
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Tag published source
+        env:
+          RELEASE_TAG: ${{ needs.check-changes.outputs.release_tag }}
+          RELEASE_TITLE: ${{ needs.check-changes.outputs.release_title }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "$RELEASE_TAG" -m "$RELEASE_TITLE" "$GITHUB_SHA"
+          git push origin "$RELEASE_TAG"
