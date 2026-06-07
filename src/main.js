@@ -6,17 +6,62 @@ const RELEASES_URL = "https://github.com/matheus-apolonio/tabflow-resources/rele
 const platformAssets = {
   macos: {
     label: "macOS",
+    glyph: "",
     pattern: /^TabFlow-App-.+\.dmg$/i,
   },
   windows: {
     label: "Windows",
+    glyph: "⊞",
     pattern: /^TabFlow-App-.+(Setup\.exe|\.msi)$/i,
   },
   linux: {
     label: "Linux",
+    glyph: "◆",
     pattern: /^(tabflow-app_.+_amd64\.deb|TabFlow-App-.+\.AppImage)$/i,
   },
 };
+
+const THEME_STORAGE_KEY = "tabflow-site-theme";
+const systemDarkQuery = window.matchMedia("(prefers-color-scheme: dark)");
+
+function storedTheme() {
+  const theme = localStorage.getItem(THEME_STORAGE_KEY);
+  return theme === "dark" || theme === "light" ? theme : null;
+}
+
+function effectiveTheme() {
+  return storedTheme() ?? (systemDarkQuery.matches ? "dark" : "light");
+}
+
+function updateThemeImages(theme) {
+  document.querySelectorAll("[data-theme-image]").forEach((image) => {
+    const source = image.dataset[theme === "dark" ? "darkSrc" : "lightSrc"];
+    if (source && image.getAttribute("src") !== source) {
+      image.setAttribute("src", source);
+    }
+  });
+}
+
+function applyTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  document.querySelector('meta[name="theme-color"]')?.setAttribute(
+    "content",
+    theme === "dark" ? "#09090b" : "#ffffff",
+  );
+  updateThemeImages(theme);
+}
+
+function setupTheme() {
+  applyTheme(effectiveTheme());
+  document.querySelector("[data-theme-toggle]")?.addEventListener("click", () => {
+    const nextTheme = effectiveTheme() === "dark" ? "light" : "dark";
+    localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+    applyTheme(nextTheme);
+  });
+  systemDarkQuery.addEventListener("change", () => {
+    if (!storedTheme()) applyTheme(effectiveTheme());
+  });
+}
 
 function detectPlatform() {
   const platform = `${navigator.userAgentData?.platform ?? navigator.platform ?? ""} ${navigator.userAgent ?? ""}`.toLowerCase();
@@ -45,18 +90,24 @@ function compareAppRelease(left, right) {
 function setDownloadState({ href, platformLabel, release, directAsset }) {
   const links = document.querySelectorAll("[data-download-link]");
   const labels = document.querySelectorAll("[data-download-label]");
+  const glyphs = document.querySelectorAll("[data-platform-glyph]");
   const status = document.querySelector("[data-download-status]");
   const releaseTitle = document.querySelector("[data-release-title]");
   const releaseMeta = document.querySelector("[data-release-meta]");
+  const platform = Object.values(platformAssets).find((candidate) => candidate.label === platformLabel);
 
   links.forEach((link) => {
     link.href = href;
     link.rel = "noopener noreferrer";
   });
 
-  const labelText = directAsset ? `Download for ${platformLabel}` : `View ${platformLabel} release`;
+  const labelText = platform ? "Download for" : "Download";
   labels.forEach((label) => {
     label.textContent = labelText;
+  });
+  glyphs.forEach((glyph) => {
+    glyph.textContent = platform?.glyph ?? "";
+    glyph.hidden = !platform;
   });
 
   if (status) {
@@ -129,4 +180,5 @@ async function hydrateDownloads() {
   }
 }
 
+setupTheme();
 void hydrateDownloads();
