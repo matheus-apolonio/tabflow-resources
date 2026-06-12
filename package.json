@@ -3,13 +3,21 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0",
+    "npm": ">=10"
+  },
   "scripts": {
+    "start": "npm run dev",
     "dev": "vite --host 127.0.0.1",
     "build": "vite build",
     "preview": "vite preview --host 127.0.0.1",
-    "check": "npm run build"
+    "format": "prettier --check .",
+    "format:write": "prettier --write .",
+    "check": "npm run format:write && npm run build"
   },
   "devDependencies": {
+    "prettier": "^3.8.4",
     "vite": "^8.0.16"
   }
 }

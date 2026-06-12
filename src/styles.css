@@ -269,7 +269,8 @@ footer a:hover {
   gap: clamp(2rem, 6vw, 5.5rem);
   max-width: 78rem;
   margin: 0 auto;
-  padding: clamp(3.5rem, 8vw, 7rem) clamp(1rem, 4vw, 2rem) clamp(3rem, 6vw, 5rem);
+  padding: clamp(3.5rem, 8vw, 7rem) clamp(1rem, 4vw, 2rem)
+    clamp(3rem, 6vw, 5rem);
 }
 
 .hero-copy {
@@ -367,6 +368,7 @@ h3 {
 
 .split-section,
 .install-section,
+.extension-section,
 .browser-section,
 .release-section {
   max-width: 78rem;
@@ -375,7 +377,8 @@ h3 {
 }
 
 .split-section,
-.install-section {
+.install-section,
+.extension-section {
   display: grid;
   grid-template-columns: minmax(0, 0.8fr) minmax(22rem, 1fr);
   gap: clamp(2rem, 6vw, 5rem);
@@ -464,6 +467,18 @@ h3 {
 
 .install-section {
   align-items: start;
+}
+
+.extension-section {
+  align-items: center;
+  padding-top: 0;
+}
+
+.extension-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.75rem;
 }
 
 .install-steps {
@@ -561,8 +576,13 @@ footer span {
 
   .hero-section,
   .split-section,
-  .install-section {
+  .install-section,
+  .extension-section {
     grid-template-columns: 1fr;
+  }
+
+  .extension-actions {
+    justify-content: flex-start;
   }
 
   .browser-grid {
@@ -604,7 +624,8 @@ footer span {
 
   .hero-actions,
   .primary-action,
-  .secondary-action {
+  .secondary-action,
+  .extension-actions {
     width: 100%;
   }
 

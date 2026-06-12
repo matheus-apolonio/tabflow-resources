@@ -1,7 +1,11 @@
 import "./styles.css";
 
-const RELEASES_API = "https://api.github.com/repos/matheus-apolonio/tabflow-resources/releases?per_page=100";
-const RELEASES_URL = "https://github.com/matheus-apolonio/tabflow-resources/releases";
+const RELEASES_API =
+  "https://api.github.com/repos/matheus-apolonio/tabflow-resources/releases?per_page=20";
+const RELEASES_URL =
+  "https://github.com/matheus-apolonio/tabflow-resources/releases";
+const RELEASES_CACHE_KEY = "tabflow-site-releases-cache-v1";
+const RELEASES_CACHE_TTL_MS = 15 * 60 * 1000;
 
 const platformAssets = {
   macos: {
@@ -24,8 +28,25 @@ const platformAssets = {
 const THEME_STORAGE_KEY = "tabflow-site-theme";
 const systemDarkQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
+function readStorage(key) {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+function writeStorage(key, value) {
+  try {
+    localStorage.setItem(key, value);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 function storedTheme() {
-  const theme = localStorage.getItem(THEME_STORAGE_KEY);
+  const theme = readStorage(THEME_STORAGE_KEY);
   return theme === "dark" || theme === "light" ? theme : null;
 }
 
@@ -44,27 +65,29 @@ function updateThemeImages(theme) {
 
 function applyTheme(theme) {
   document.documentElement.dataset.theme = theme;
-  document.querySelector('meta[name="theme-color"]')?.setAttribute(
-    "content",
-    theme === "dark" ? "#09090b" : "#ffffff",
-  );
+  document
+    .querySelector('meta[name="theme-color"]')
+    ?.setAttribute("content", theme === "dark" ? "#09090b" : "#ffffff");
   updateThemeImages(theme);
 }
 
 function setupTheme() {
   applyTheme(effectiveTheme());
-  document.querySelector("[data-theme-toggle]")?.addEventListener("click", () => {
-    const nextTheme = effectiveTheme() === "dark" ? "light" : "dark";
-    localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
-    applyTheme(nextTheme);
-  });
+  document
+    .querySelector("[data-theme-toggle]")
+    ?.addEventListener("click", () => {
+      const nextTheme = effectiveTheme() === "dark" ? "light" : "dark";
+      writeStorage(THEME_STORAGE_KEY, nextTheme);
+      applyTheme(nextTheme);
+    });
   systemDarkQuery.addEventListener("change", () => {
     if (!storedTheme()) applyTheme(effectiveTheme());
   });
 }
 
 function detectPlatform() {
-  const platform = `${navigator.userAgentData?.platform ?? navigator.platform ?? ""} ${navigator.userAgent ?? ""}`.toLowerCase();
+  const platform =
+    `${navigator.userAgentData?.platform ?? navigator.platform ?? ""} ${navigator.userAgent ?? ""}`.toLowerCase();
   if (platform.includes("mac")) return "macos";
   if (platform.includes("win")) return "windows";
   if (platform.includes("linux")) return "linux";
@@ -84,7 +107,10 @@ function compareAppRelease(left, right) {
       return rightParts[index] - leftParts[index];
     }
   }
-  return new Date(right.published_at ?? right.created_at ?? 0) - new Date(left.published_at ?? left.created_at ?? 0);
+  return (
+    new Date(right.published_at ?? right.created_at ?? 0) -
+    new Date(left.published_at ?? left.created_at ?? 0)
+  );
 }
 
 function setDownloadState({ href, platformLabel, release, directAsset }) {
@@ -94,7 +120,9 @@ function setDownloadState({ href, platformLabel, release, directAsset }) {
   const status = document.querySelector("[data-download-status]");
   const releaseTitle = document.querySelector("[data-release-title]");
   const releaseMeta = document.querySelector("[data-release-meta]");
-  const platform = Object.values(platformAssets).find((candidate) => candidate.label === platformLabel);
+  const platform = Object.values(platformAssets).find(
+    (candidate) => candidate.label === platformLabel,
+  );
 
   links.forEach((link) => {
     link.href = href;
@@ -121,12 +149,17 @@ function setDownloadState({ href, platformLabel, release, directAsset }) {
   }
 
   if (releaseMeta && release) {
-    const published = release.published_at ? new Date(release.published_at).toLocaleDateString(undefined, {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    }) : "recently";
-    const appReleaseName = release.tag_name.replace(/^app-/, "tabflow-companion-app-");
+    const published = release.published_at
+      ? new Date(release.published_at).toLocaleDateString(undefined, {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        })
+      : "recently";
+    const appReleaseName = release.tag_name.replace(
+      /^app-/,
+      "tabflow-companion-app-",
+    );
     releaseMeta.textContent = `${appReleaseName} published ${published}. The download is selected automatically for ${platformLabel}.`;
   }
 }
@@ -141,6 +174,54 @@ function setFallbackState(platformKey = detectPlatform()) {
   });
 }
 
+function readCachedReleases() {
+  const value = readStorage(RELEASES_CACHE_KEY);
+  if (!value) return null;
+
+  try {
+    const cached = JSON.parse(value);
+    if (
+      !Array.isArray(cached.releases) ||
+      typeof cached.cachedAt !== "number"
+    ) {
+      return null;
+    }
+    if (Date.now() - cached.cachedAt > RELEASES_CACHE_TTL_MS) {
+      return null;
+    }
+    return cached.releases;
+  } catch {
+    return null;
+  }
+}
+
+function writeCachedReleases(releases) {
+  writeStorage(
+    RELEASES_CACHE_KEY,
+    JSON.stringify({
+      cachedAt: Date.now(),
+      releases,
+    }),
+  );
+}
+
+async function loadReleases() {
+  const cachedReleases = readCachedReleases();
+  if (cachedReleases) return cachedReleases;
+
+  const response = await fetch(RELEASES_API, {
+    cache: "default",
+    headers: {
+      Accept: "application/vnd.github+json",
+    },
+  });
+  if (!response.ok) throw new Error(`GitHub returned ${response.status}`);
+
+  const releases = await response.json();
+  writeCachedReleases(releases);
+  return releases;
+}
+
 async function hydrateDownloads() {
   const platformKey = detectPlatform();
   const platform = platformAssets[platformKey];
@@ -150,17 +231,11 @@ async function hydrateDownloads() {
   }
 
   try {
-    const response = await fetch(RELEASES_API, {
-      cache: "no-store",
-      headers: {
-        Accept: "application/vnd.github+json",
-      },
-    });
-    if (!response.ok) throw new Error(`GitHub returned ${response.status}`);
-
-    const releases = await response.json();
+    const releases = await loadReleases();
     const appRelease = releases
-      .filter((release) => !release.draft && release.tag_name?.startsWith("app-"))
+      .filter(
+        (release) => !release.draft && release.tag_name?.startsWith("app-"),
+      )
       .sort(compareAppRelease)[0];
 
     if (!appRelease) {
@@ -168,7 +243,9 @@ async function hydrateDownloads() {
       return;
     }
 
-    const asset = appRelease.assets?.find((candidate) => platform.pattern.test(candidate.name));
+    const asset = appRelease.assets?.find((candidate) =>
+      platform.pattern.test(candidate.name),
+    );
     setDownloadState({
       href: asset?.browser_download_url ?? appRelease.html_url ?? RELEASES_URL,
       platformLabel: platform.label,
