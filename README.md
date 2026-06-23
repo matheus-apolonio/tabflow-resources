@@ -8,8 +8,8 @@ https://matheus-apolonio.github.io/tabflow-resources/
 
 ## Development
 
-Use Node.js `^20.19.0` or `>=22.12.0` with npm. The release workflow currently
-uses Node 22. Static asset paths in `index.html` should be relative or
+Use Node.js `>=24.0.0` with npm. The release workflow currently
+uses Node 24. Static asset paths in `index.html` should be relative or
 Vite-resolved because the site is served from the `/tabflow-resources/` GitHub
 Pages base.
 
